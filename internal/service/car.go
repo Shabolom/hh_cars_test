@@ -1,10 +1,13 @@
 package service
 
 import (
+	"fmt"
 	"github.com/gofrs/uuid"
+	log "github.com/sirupsen/logrus"
 	"hh_test_autho/internal/domain"
 	"hh_test_autho/internal/model"
 	"hh_test_autho/internal/repository"
+	"strconv"
 	"time"
 )
 
@@ -22,12 +25,14 @@ func (cs *CarsService) Post(cars []model.Car) error {
 
 	id, err := uuid.NewV4()
 	if err != nil {
+		log.WithField("component", "service").Debug(err)
 		return err
 	}
 
 	for _, car := range cars {
 		ownerUuid, err2 := uuid.FromString(car.OwnerID)
 		if err2 != nil {
+			log.WithField("component", "service").Debug(err2)
 			return err2
 		}
 
@@ -55,14 +60,16 @@ func (cs *CarsService) Post(cars []model.Car) error {
 
 func (cs *CarsService) Update(car model.Car, carStrID string) error {
 
-	carID, err2 := uuid.FromString(carStrID)
-	if err2 != nil {
-		return err2
+	carID, err := uuid.FromString(carStrID)
+	if err != nil {
+		log.WithField("component", "service").Debug(err)
+		return err
 	}
 
-	ownerUuid, err2 := uuid.FromString(car.OwnerID)
-	if err2 != nil {
-		return err2
+	ownerUuid, err := uuid.FromString(car.OwnerID)
+	if err != nil {
+		log.WithField("component", "service").Debug(err)
+		return err
 	}
 
 	// оставлю возможность смены владельца автомабиля.
@@ -75,7 +82,7 @@ func (cs *CarsService) Update(car model.Car, carStrID string) error {
 		Year:     car.Year,
 	}
 
-	err := carRepo.Update(carEntity, carID)
+	err = carRepo.Update(carEntity, carID)
 	if err != nil {
 		return err
 	}
@@ -87,6 +94,7 @@ func (cs *CarsService) Delete(carStrID string) error {
 
 	carID, err := uuid.FromString(carStrID)
 	if err != nil {
+		log.WithField("component", "service").Debug(err)
 		return err
 	}
 
@@ -98,30 +106,32 @@ func (cs *CarsService) Delete(carStrID string) error {
 	return nil
 }
 
-func (cs *CarsService) Get(car model.Car, limit, skip uint64) ([]domain.Car, error) {
+func (cs *CarsService) Get(car model.Car, limit, skip uint64) (string, []domain.Car, error) {
 	var ownerID uuid.UUID
 
 	if car.OwnerID != "" {
 		ownerID2, err := uuid.FromString(car.OwnerID)
 		if err != nil {
-			return []domain.Car{}, err
+			log.WithField("component", "service").Debug(err)
+			return "", []domain.Car{}, err
 		}
 		ownerID = ownerID2
-	} else {
-		ownerID = uuid.Nil
 	}
 
-	result, err := carRepo.Get(car, &ownerID, limit, skip)
+	countCars, result, err := carRepo.Get(car, ownerID, limit, skip)
 	if err != nil {
-		return []domain.Car{}, err
+		return "", []domain.Car{}, err
 	}
+	countStr := strconv.Itoa(countCars)
+	countStr = fmt.Sprintf("\n всего машин в наличии в базе: %s \n", countStr)
 
-	return result, nil
+	return countStr, result, nil
 }
 
 func (cs *CarsService) GetID(strCarID string) (domain.Car, error) {
 	carID, err := uuid.FromString(strCarID)
 	if err != nil {
+		log.WithField("component", "service").Debug(err)
 		return domain.Car{}, err
 	}
 

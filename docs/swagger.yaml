@@ -1,0 +1,212 @@
+definitions:
+  domain.Car:
+    properties:
+      createdAt:
+        type: string
+      deletedAt:
+        type: string
+      id:
+        type: string
+      mark:
+        type: string
+      model:
+        type: string
+      ownerID:
+        type: string
+      regNum:
+        type: string
+      updateAt:
+        type: string
+      year:
+        type: integer
+    type: object
+  model.Car:
+    properties:
+      mark:
+        type: string
+      model:
+        type: string
+      ownerID:
+        type: string
+      regMum:
+        type: string
+      year:
+        type: integer
+    type: object
+  model.Error:
+    properties:
+      code:
+        type: integer
+      error:
+        type: string
+    type: object
+  model.RegNums:
+    properties:
+      regNums:
+        items:
+          type: string
+        type: array
+    type: object
+host: localhost:8800
+info:
+  contact:
+    email: tima.gorenskiy@mail.ru
+    url: https://t.me/Timuchin3
+  description: Это hh_cars_project с использованием свагера
+  termsOfService: тут были бы условия использования еслиб я их мог обозначить
+  title: Cars_API
+  version: 1.0.0
+paths:
+  /api/car:
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: это поле отвечает за марку машины
+        in: query
+        name: mark
+        type: string
+      - description: это поле отвечает за марку машины
+        in: query
+        name: owner_id
+        type: string
+      - description: это поле отвечает за модель машины
+        in: query
+        name: model
+        type: string
+      - description: это поле отвечает за номер машины
+        in: query
+        name: reg_num
+        type: string
+      - description: это поле отвечает за год выпуска машины
+        in: query
+        name: year
+        type: string
+      - description: это поле отвечает за страницу
+        in: query
+        name: page
+        type: string
+      - description: это поле отвечает за количество элементов на странице
+        in: query
+        name: limit
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/model.Error'
+      summary: Получение данных с фильтрацией по всем полям и пагинацией, данные
+        передаются в query params.
+      tags:
+      - get
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: введите массив номеров необходимых машин
+        in: body
+        name: ввод
+        required: true
+        schema:
+          $ref: '#/definitions/model.RegNums'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: данные занесены
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/model.Error'
+      summary: Добавления новых автомобилей в формате принятия массива номеров с
+        последующим обращением на другой сервис и получения данных об этих машинах.
+      tags:
+      - post
+  /api/car/{id}:
+    delete:
+      consumes:
+      - application/json
+      parameters:
+      - description: укажите id машины
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/domain.Car'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/model.Error'
+      summary: Удаления по идентификатору.
+      tags:
+      - get
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: передайте id машины
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/domain.Car'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/model.Error'
+      summary: Получение данных получение данных по id машины для дальнейшего заполнения
+        ручки Update для удобства пользователя.
+      tags:
+      - get_id
+    put:
+      consumes:
+      - application/json
+      parameters:
+      - description: выберите данные которые хотите изменить
+        in: body
+        name: ввод
+        required: true
+        schema:
+          $ref: '#/definitions/model.Car'
+      - description: укажите id машины
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: данные упешно изменены
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/model.Error'
+      summary: Изменение одного или нескольких полей по идентификатору.
+      tags:
+      - update
+swagger: "2.0"

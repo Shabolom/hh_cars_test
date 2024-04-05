@@ -1,17 +1,20 @@
 package tools
 
 import (
-	"io"
 	"net/http"
 )
 
-func RequestCreator(method, url string, reader io.Reader) (*http.Response, error) {
-	req, err := http.NewRequest(method, url, reader)
+func RequestCreator(method, url string, regNum string) (*http.Response, error) {
+	req, err := http.NewRequest(method, url, nil)
 	if err != nil {
 		return &http.Response{}, err
 	}
 
+	q := req.URL.Query()
+	q.Add("regNum", regNum)
+
 	client := http.Client{}
+
 	resp, err := client.Do(req)
 	if err != nil {
 		return &http.Response{}, err

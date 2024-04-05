@@ -2,11 +2,13 @@ package tools
 
 import (
 	nested "github.com/antonfisher/nested-logrus-formatter"
+	log "github.com/sirupsen/logrus"
 	"hh_test_autho/config"
 	"os"
-
-	log "github.com/sirupsen/logrus"
+	"runtime"
 )
+
+var InfoLog *log.Logger
 
 func InitLogger() error {
 
@@ -51,4 +53,22 @@ func InitLogger() error {
 		})
 	}
 	return nil
+}
+
+func InfoLogs() *log.Logger {
+	infoLog := log.New()
+	infoLog.SetLevel(log.DebugLevel)
+	infoLog.SetOutput(os.Stdout)
+	infoLog.SetFormatter(&nested.Formatter{
+		ShowFullLevel: true,
+		HideKeys:      true,
+		FieldsOrder:   []string{"component", "middleware"},
+		CustomCallerFormatter: func(frame *runtime.Frame) string {
+			return ""
+		},
+	})
+
+	InfoLog = infoLog
+
+	return infoLog
 }
