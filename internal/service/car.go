@@ -24,7 +24,7 @@ func (cs *CarsService) Post(nums model.RegNums) ([]domain.Car, error) {
 	var carsDomainMass []domain.Car
 	var carsModel []model.Car
 
-	if config.Env.Production {
+	if !config.Env.Production {
 		err := carRepo.Post(tools.TestPlug())
 		if err != nil {
 			return []domain.Car{}, err

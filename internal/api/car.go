@@ -94,6 +94,7 @@ func (ca *CarApi) Update(c *gin.Context) {
 func (ca *CarApi) Delete(c *gin.Context) {
 	carID := c.Param("id")
 
+	// обратить внимание, что происходит soft delete.
 	err := carService.Delete(carID)
 	if err != nil {
 		tools.CreateError(http.StatusBadRequest, err, c)
