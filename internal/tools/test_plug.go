@@ -1,16 +1,26 @@
 package tools
 
-import "hh_test_autho/internal/model"
+import (
+	"github.com/gofrs/uuid"
+	"hh_test_autho/internal/domain"
+	"time"
+)
 
-func TestPlug() []model.Car {
-	var cars []model.Car
+func TestPlug() []domain.Car {
+	var cars []domain.Car
 
-	carModelEntity := model.Car{
-		Mark:    "Lada",
-		OwnerID: "2bd08077-cc68-4b9c-8196-50281736c8f5",
-		Model:   "Vesta",
-		RegNum:  "X123XX150",
-		Year:    2002,
+	id, _ := uuid.NewV4()
+	ownerID, _ := uuid.FromString("2bd08077-cc68-4b9c-8196-50281736c8f5")
+
+	carModelEntity := domain.Car{
+		ID:        id,
+		CreatedAt: time.Now(),
+		UpdateAt:  time.Now(),
+		OwnerID:   ownerID,
+		Mark:      "Lada",
+		Model:     "Vesta",
+		RegNum:    "X123XX150",
+		Year:      2002,
 	}
 	cars = append(cars, carModelEntity)
 

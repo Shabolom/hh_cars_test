@@ -3,7 +3,7 @@
     "info": {
         "description": "Это hh_cars_project с использованием свагера",
         "title": "Cars_API",
-        "termsOfService": "тут были бы условия использования еслиб я их мог обозначить",
+        "termsOfService": "тут были-бы условия использования, еслибы я их мог обозначить",
         "contact": {
             "url": "https://t.me/Timuchin3",
             "email": "tima.gorenskiy@mail.ru"
@@ -21,7 +21,7 @@
                     "application/json"
                 ],
                 "tags": [
-                    "get"
+                    "car"
                 ],
                 "summary": "Получение данных с фильтрацией по всем полям и пагинацией, данные передаются в query params.",
                 "parameters": [
@@ -91,7 +91,7 @@
                     "application/json"
                 ],
                 "tags": [
-                    "post"
+                    "car"
                 ],
                 "summary": "Добавления новых автомобилей в формате принятия массива номеров с последующим обращением на другой сервис и получения данных об этих машинах.",
                 "parameters": [
@@ -107,9 +107,9 @@
                 ],
                 "responses": {
                     "201": {
-                        "description": "данные занесены",
+                        "description": "Created",
                         "schema": {
-                            "type": "string"
+                            "$ref": "#/definitions/domain.Car"
                         }
                     },
                     "400": {
@@ -130,7 +130,7 @@
                     "application/json"
                 ],
                 "tags": [
-                    "get_id"
+                    "car"
                 ],
                 "summary": "Получение данных получение данных по id машины для дальнейшего заполнения ручки Update для удобства пользователя.",
                 "parameters": [
@@ -165,7 +165,7 @@
                     "application/json"
                 ],
                 "tags": [
-                    "update"
+                    "car"
                 ],
                 "summary": "Изменение одного или нескольких полей по идентификатору.",
                 "parameters": [
@@ -209,7 +209,7 @@
                     "application/json"
                 ],
                 "tags": [
-                    "get"
+                    "car"
                 ],
                 "summary": "Удаления по идентификатору.",
                 "parameters": [
@@ -222,13 +222,10 @@
                     }
                 ],
                 "responses": {
-                    "200": {
-                        "description": "OK",
+                    "204": {
+                        "description": "No Content",
                         "schema": {
-                            "type": "array",
-                            "items": {
-                                "$ref": "#/definitions/domain.Car"
-                            }
+                            "type": "string"
                         }
                     },
                     "400": {

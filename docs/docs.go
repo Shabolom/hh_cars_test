@@ -9,7 +9,7 @@ const docTemplate = `{
     "info": {
         "description": "{{escape .Description}}",
         "title": "{{.Title}}",
-        "termsOfService": "тут были бы условия использования еслиб я их мог обозначить",
+        "termsOfService": "тут были-бы условия использования, еслибы я их мог обозначить",
         "contact": {
             "url": "https://t.me/Timuchin3",
             "email": "tima.gorenskiy@mail.ru"
@@ -28,7 +28,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "get"
+                    "car"
                 ],
                 "summary": "Получение данных с фильтрацией по всем полям и пагинацией, данные передаются в query params.",
                 "parameters": [
@@ -98,7 +98,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "post"
+                    "car"
                 ],
                 "summary": "Добавления новых автомобилей в формате принятия массива номеров с последующим обращением на другой сервис и получения данных об этих машинах.",
                 "parameters": [
@@ -137,7 +137,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "get_id"
+                    "car"
                 ],
                 "summary": "Получение данных получение данных по id машины для дальнейшего заполнения ручки Update для удобства пользователя.",
                 "parameters": [
@@ -172,7 +172,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "update"
+                    "car"
                 ],
                 "summary": "Изменение одного или нескольких полей по идентификатору.",
                 "parameters": [
@@ -216,7 +216,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "get"
+                    "car"
                 ],
                 "summary": "Удаления по идентификатору.",
                 "parameters": [

@@ -10,9 +10,9 @@ func GetParams(c *gin.Context) (model.Car, error) {
 
 	year := 0
 	mark := c.Query("mark")
-	owner_id := c.Query("owner_id")
+	ownerId := c.Query("owner_id")
 	carModel := c.Query("model")
-	reg_num := c.Query("reg_num")
+	regNum := c.Query("reg_num")
 
 	if c.Query("year") != "" {
 		year2, err := strconv.Atoi(c.Query("year"))
@@ -24,9 +24,9 @@ func GetParams(c *gin.Context) (model.Car, error) {
 
 	carFilter := model.Car{
 		Mark:    mark,
-		OwnerID: owner_id,
+		OwnerID: ownerId,
 		Model:   carModel,
-		RegNum:  reg_num,
+		RegNum:  regNum,
 		Year:    year,
 	}
 
