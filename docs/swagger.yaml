@@ -40,6 +40,15 @@ definitions:
       error:
         type: string
     type: object
+  model.GetResp:
+    properties:
+      cars:
+        items:
+          $ref: '#/definitions/domain.Car'
+        type: array
+      totalAmount:
+        type: integer
+    type: object
   model.RegNums:
     properties:
       regNums:

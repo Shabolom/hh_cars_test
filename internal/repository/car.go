@@ -101,7 +101,7 @@ func (cr *CarRepo) Delete(carID uuid.UUID) error {
 	return nil
 }
 
-func (cr *CarRepo) Get(filter model.Car, ownerID uuid.UUID, limit, skip uint64) (int, []domain.Car, error) {
+func (cr *CarRepo) Get(filter model.Car, ownerID uuid.UUID, limit, skip uint64) (model.GetResp, error) {
 	var cars []domain.Car
 	var car domain.Car
 
@@ -119,13 +119,13 @@ func (cr *CarRepo) Get(filter model.Car, ownerID uuid.UUID, limit, skip uint64) 
 		ToSql()
 	if err != nil {
 		log.WithField("component", "repository").Debug(err)
-		return 0, []domain.Car{}, err
+		return model.GetResp{}, err
 	}
 
 	rows, err := config.Pool.Query(context.TODO(), sql, args...)
 	if err != nil {
 		log.WithField("component", "repository").Debug(err)
-		return 0, []domain.Car{}, err
+		return model.GetResp{}, err
 	}
 
 	for rows.Next() {
@@ -140,7 +140,7 @@ func (cr *CarRepo) Get(filter model.Car, ownerID uuid.UUID, limit, skip uint64) 
 			&car.Year)
 		if err2 != nil {
 			log.WithField("component", "repository").Debug(err2)
-			return 0, []domain.Car{}, err2
+			return model.GetResp{}, err2
 		}
 		cars = append(cars, car)
 	}
@@ -149,10 +149,15 @@ func (cr *CarRepo) Get(filter model.Car, ownerID uuid.UUID, limit, skip uint64) 
 	countAllCars, err := cr.GetAllCarsCount()
 	if err != nil {
 		log.WithField("component", "repository").Debug(err)
-		return 0, []domain.Car{}, err
+		return model.GetResp{}, err
 	}
 
-	return countAllCars, cars, nil
+	result := model.GetResp{
+		Cars:        cars,
+		TotalAmount: countAllCars,
+	}
+
+	return result, nil
 }
 
 func (cr *CarRepo) GetID(carID uuid.UUID) (domain.Car, error) {

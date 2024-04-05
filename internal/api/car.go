@@ -148,7 +148,7 @@ func (ca *CarApi) Delete(c *gin.Context) {
 // @Param	year	query		string	false	"это поле отвечает за год выпуска машины"
 // @Param	page	query		string	false	"это поле отвечает за страницу"
 // @Param	limit	query		string	false	"это поле отвечает за количество элементов на странице"
-// @Success	200		{object}	[]domain.Car
+// @Success	200		{object}	model.GetResp
 // @Success	200		{string}	string
 // @Failure	400		{object}	model.Error
 // @Router	/api/car [get]
@@ -162,21 +162,13 @@ func (ca *CarApi) Get(c *gin.Context) {
 		return
 	}
 
-	countCars, result, err := carService.Get(car, limit, skip)
+	result, err := carService.Get(car, limit, skip)
 	if err != nil {
 		tools.CreateError(http.StatusBadRequest, err, c)
 		return
 	}
 
 	c.JSON(http.StatusOK, result)
-
-	_, err = c.Writer.Write([]byte(countCars))
-	if err != nil {
-		tools.CreateError(http.StatusBadRequest, err, c)
-		log.WithField("component", "api").Debug(err)
-		return
-	}
-
 	defer c.Request.Body.Close()
 }
 

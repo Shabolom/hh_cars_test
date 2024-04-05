@@ -1,13 +1,11 @@
 package service
 
 import (
-	"fmt"
 	"github.com/gofrs/uuid"
 	log "github.com/sirupsen/logrus"
 	"hh_test_autho/internal/domain"
 	"hh_test_autho/internal/model"
 	"hh_test_autho/internal/repository"
-	"strconv"
 	"time"
 )
 
@@ -106,26 +104,24 @@ func (cs *CarsService) Delete(carStrID string) error {
 	return nil
 }
 
-func (cs *CarsService) Get(car model.Car, limit, skip uint64) (string, []domain.Car, error) {
+func (cs *CarsService) Get(car model.Car, limit, skip uint64) (model.GetResp, error) {
 	var ownerID uuid.UUID
 
 	if car.OwnerID != "" {
 		ownerID2, err := uuid.FromString(car.OwnerID)
 		if err != nil {
 			log.WithField("component", "service").Debug(err)
-			return "", []domain.Car{}, err
+			return model.GetResp{}, err
 		}
 		ownerID = ownerID2
 	}
 
-	countCars, result, err := carRepo.Get(car, ownerID, limit, skip)
+	result, err := carRepo.Get(car, ownerID, limit, skip)
 	if err != nil {
-		return "", []domain.Car{}, err
+		return model.GetResp{}, err
 	}
-	countStr := strconv.Itoa(countCars)
-	countStr = fmt.Sprintf("\n всего машин в наличии в базе: %s \n", countStr)
 
-	return countStr, result, nil
+	return result, nil
 }
 
 func (cs *CarsService) GetID(strCarID string) (domain.Car, error) {
