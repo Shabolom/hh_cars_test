@@ -197,7 +197,8 @@ func (cr *CarRepo) GetAllCarsCount() (int, error) {
 
 	sql, args, err := config.Sq.
 		Select("COUNT(id)").
-		From("cars").
+		From("cars c ").
+		Where("c.deleted_at IS NULL").
 		ToSql()
 	if err != nil {
 		log.WithField("component", "repository").Debug(err)
