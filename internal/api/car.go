@@ -3,7 +3,6 @@ package api
 import (
 	"github.com/gin-gonic/gin"
 	log "github.com/sirupsen/logrus"
-	"hh_test_autho/config"
 	"hh_test_autho/internal/model"
 	"hh_test_autho/internal/service"
 	"hh_test_autho/internal/tools"
@@ -25,14 +24,13 @@ var carService = service.NEwCarsService()
 // @Summary	Добавления новых автомобилей в формате принятия массива номеров с последующим обращением на другой сервис и получения данных об этих машинах.
 // @Accept	json
 // @Produce	json
-// @Tags	post
+// @Tags	car
 // @Param	ввод	body		model.RegNums	true	"введите массив номеров необходимых машин"
-// @Success	201		{string}	string 	"данные занесены"
+// @Success	201		{object}	domain.Car
 // @Failure	400		{object}	model.Error
 // @Router	/api/car [post]
 func (ca *CarApi) Post(c *gin.Context) {
 	var regNums model.RegNums
-	var cars []model.Car
 
 	err := tools.ShortUnmarshal(c.Request.Body, &regNums)
 	if err != nil {
@@ -41,42 +39,13 @@ func (ca *CarApi) Post(c *gin.Context) {
 		return
 	}
 
-	if config.Env.Production {
-		for _, regNum := range regNums.RegNums {
-			resp, err2 := tools.RequestCreator("GET", config.Env.ConnectionGet, regNum)
-			if err2 != nil {
-				tools.CreateError(http.StatusBadRequest, err2, c)
-				log.WithField("component", "api").Debug(err2)
-				return
-			}
-
-			err2 = tools.ShortUnmarshal(resp.Body, &cars)
-			if err2 != nil {
-				tools.CreateError(http.StatusBadRequest, err2, c)
-				log.WithField("component", "api").Debug(err2)
-				return
-			}
-		}
-
-		err = carService.Post(cars)
-		if err != nil {
-			tools.CreateError(http.StatusBadRequest, err, c)
-			return
-		}
-
-		c.String(http.StatusCreated, "данные занесены")
+	result, err := carService.Post(regNums)
+	if err != nil {
+		tools.CreateError(http.StatusBadRequest, err, c)
 		return
-	} else {
-
-		//Для тестирования
-		err = carService.Post(tools.TestPlug())
-		if err != nil {
-			tools.CreateError(http.StatusBadRequest, err, c)
-			return
-		}
-
-		c.String(http.StatusCreated, "данные занесены")
 	}
+
+	c.JSON(http.StatusCreated, result)
 	defer c.Request.Body.Close()
 }
 
@@ -85,7 +54,7 @@ func (ca *CarApi) Post(c *gin.Context) {
 // @Summary	Изменение одного или нескольких полей по идентификатору.
 // @Accept	json
 // @Produce	json
-// @Tags	update
+// @Tags	car
 // @Param	ввод	body		model.Car	true	"выберите данные которые хотите изменить"
 // @Param	id		path		string	true	"укажите id машины"
 // @Success	200		{string}	string 	"данные упешно изменены"
@@ -117,9 +86,9 @@ func (ca *CarApi) Update(c *gin.Context) {
 // @Summary	Удаления по идентификатору.
 // @Accept	json
 // @Produce	json
-// @Tags	get
+// @Tags	car
 // @Param	id		path		string	true	"укажите id машины"
-// @Success	200		{object}	[]domain.Car
+// @Success	204		{string}	string ""
 // @Failure	400		{object}	model.Error
 // @Router	/api/car/{id} [delete]
 func (ca *CarApi) Delete(c *gin.Context) {
@@ -131,7 +100,7 @@ func (ca *CarApi) Delete(c *gin.Context) {
 		return
 	}
 
-	c.String(http.StatusOK, "запись удалена")
+	c.Status(http.StatusNoContent)
 	defer c.Request.Body.Close()
 }
 
@@ -140,7 +109,7 @@ func (ca *CarApi) Delete(c *gin.Context) {
 // @Summary	Получение данных с фильтрацией по всем полям и пагинацией, данные передаются в query params.
 // @Accept	json
 // @Produce	json
-// @Tags	get
+// @Tags	car
 // @Param	mark	query		string	false	"это поле отвечает за марку машины"
 // @Param	owner_id 	query	string	false	"это поле отвечает за марку машины"
 // @Param	model	query		string	false	"это поле отвечает за модель машины"
@@ -177,7 +146,7 @@ func (ca *CarApi) Get(c *gin.Context) {
 // @Summary	Получение данных получение данных по id машины для дальнейшего заполнения ручки Update для удобства пользователя.
 // @Accept	json
 // @Produce	json
-// @Tags	get_id
+// @Tags	car
 // @Param	id	path			string	true	"передайте id машины"
 // @Success	200		{object}	domain.Car
 // @Failure	400		{object}	model.Error

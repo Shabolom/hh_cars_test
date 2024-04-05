@@ -62,7 +62,7 @@ info:
     email: tima.gorenskiy@mail.ru
     url: https://t.me/Timuchin3
   description: Это hh_cars_project с использованием свагера
-  termsOfService: тут были бы условия использования еслиб я их мог обозначить
+  termsOfService: тут были-бы условия использования, еслибы я их мог обозначить
   title: Cars_API
   version: 1.0.0
 paths:
@@ -113,7 +113,7 @@ paths:
       summary: Получение данных с фильтрацией по всем полям и пагинацией, данные
         передаются в query params.
       tags:
-      - get
+      - car
     post:
       consumes:
       - application/json
@@ -128,9 +128,9 @@ paths:
       - application/json
       responses:
         "201":
-          description: данные занесены
+          description: Created
           schema:
-            type: string
+            $ref: '#/definitions/domain.Car'
         "400":
           description: Bad Request
           schema:
@@ -138,7 +138,7 @@ paths:
       summary: Добавления новых автомобилей в формате принятия массива номеров с
         последующим обращением на другой сервис и получения данных об этих машинах.
       tags:
-      - post
+      - car
   /api/car/{id}:
     delete:
       consumes:
@@ -152,19 +152,17 @@ paths:
       produces:
       - application/json
       responses:
-        "200":
-          description: OK
+        "204":
+          description: No Content
           schema:
-            items:
-              $ref: '#/definitions/domain.Car'
-            type: array
+            type: string
         "400":
           description: Bad Request
           schema:
             $ref: '#/definitions/model.Error'
       summary: Удаления по идентификатору.
       tags:
-      - get
+      - car
     get:
       consumes:
       - application/json
@@ -188,7 +186,7 @@ paths:
       summary: Получение данных получение данных по id машины для дальнейшего заполнения
         ручки Update для удобства пользователя.
       tags:
-      - get_id
+      - car
     put:
       consumes:
       - application/json
@@ -217,5 +215,5 @@ paths:
             $ref: '#/definitions/model.Error'
       summary: Изменение одного или нескольких полей по идентификатору.
       tags:
-      - update
+      - car
 swagger: "2.0"

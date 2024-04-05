@@ -3,9 +3,11 @@ package service
 import (
 	"github.com/gofrs/uuid"
 	log "github.com/sirupsen/logrus"
+	"hh_test_autho/config"
 	"hh_test_autho/internal/domain"
 	"hh_test_autho/internal/model"
 	"hh_test_autho/internal/repository"
+	"hh_test_autho/internal/tools"
 	"time"
 )
 
@@ -18,20 +20,44 @@ func NEwCarsService() *CarsService {
 
 var carRepo = repository.NewCarRepo()
 
-func (cs *CarsService) Post(cars []model.Car) error {
+func (cs *CarsService) Post(nums model.RegNums) ([]domain.Car, error) {
 	var carsDomainMass []domain.Car
+	var carsModel []model.Car
 
-	id, err := uuid.NewV4()
-	if err != nil {
-		log.WithField("component", "service").Debug(err)
-		return err
+	if config.Env.Production {
+		err := carRepo.Post(tools.TestPlug())
+		if err != nil {
+			return []domain.Car{}, err
+		}
+
+		return tools.TestPlug(), nil
 	}
 
-	for _, car := range cars {
-		ownerUuid, err2 := uuid.FromString(car.OwnerID)
-		if err2 != nil {
-			log.WithField("component", "service").Debug(err2)
-			return err2
+	for _, regNum := range nums.RegNums {
+		resp, err := tools.RequestCreator("GET", config.Env.ConnectionGet, regNum)
+		if err != nil {
+			log.WithField("component", "api").Debug(err)
+			return []domain.Car{}, err
+		}
+
+		err = tools.ShortUnmarshal(resp.Body, &carsModel)
+		if err != nil {
+			log.WithField("component", "api").Debug(err)
+			return []domain.Car{}, err
+		}
+	}
+
+	for _, car := range carsModel {
+		ownerUuid, err := uuid.FromString(car.OwnerID)
+		if err != nil {
+			log.WithField("component", "service").Debug(err)
+			return []domain.Car{}, err
+		}
+
+		id, err := uuid.NewV4()
+		if err != nil {
+			log.WithField("component", "service").Debug(err)
+			return []domain.Car{}, err
 		}
 
 		carsEntity := domain.Car{
@@ -48,12 +74,12 @@ func (cs *CarsService) Post(cars []model.Car) error {
 		carsDomainMass = append(carsDomainMass, carsEntity)
 	}
 
-	err = carRepo.Post(carsDomainMass)
+	err := carRepo.Post(carsDomainMass)
 	if err != nil {
-		return err
+		return []domain.Car{}, err
 	}
 
-	return nil
+	return carsDomainMass, nil
 }
 
 func (cs *CarsService) Update(car model.Car, carStrID string) error {

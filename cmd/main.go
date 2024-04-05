@@ -15,7 +15,7 @@ func main() {
 	//	@version	1.0.0
 
 	// 	@description 	Это hh_cars_project с использованием свагера
-	// 	@termsOfService  тут были бы условия использования еслиб я их мог обозначить
+	// 	@termsOfService  тут были-бы условия использования, еслибы я их мог обозначить
 	// 	@contact.url    https://t.me/Timuchin3
 	// 	@contact.email  tima.gorenskiy@mail.ru
 

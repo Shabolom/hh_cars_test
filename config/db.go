@@ -22,7 +22,6 @@ func InitPgSQL() error {
 		Env.DbPort,
 		Env.DbName,
 	)
-	fmt.Println(connectionString)
 
 	pool, err := pgxpool.Connect(context.Background(), connectionString)
 	if err != nil {
