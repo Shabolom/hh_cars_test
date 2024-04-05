@@ -312,6 +312,20 @@ const docTemplate = `{
                 }
             }
         },
+        "model.GetResp": {
+            "type": "object",
+            "properties": {
+                "cars": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/domain.Car"
+                    }
+                },
+                "totalAmount": {
+                    "type": "integer"
+                }
+            }
+        },
         "model.RegNums": {
             "type": "object",
             "properties": {
