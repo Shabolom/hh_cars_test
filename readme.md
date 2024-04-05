@@ -108,4 +108,8 @@ ___
 ```
 ____
 # Скриншоты структуры db и Swagger.
+**Схема db:**
+![схема_db](https://github.com/Shabolom/hh_cars_test/blob/finalv1.0/media/bd.png)
 
+**Скриншот Swagger**
+![swagger]
