@@ -22,6 +22,7 @@ var carRepo = repository.NewCarRepo()
 
 func (cs *CarsService) Post(nums model.RegNums) ([]domain.Car, error) {
 	var carsDomainMass []domain.Car
+	var carModel model.Car
 	var carsModel []model.Car
 
 	if !config.Env.Production {
@@ -40,11 +41,13 @@ func (cs *CarsService) Post(nums model.RegNums) ([]domain.Car, error) {
 			return []domain.Car{}, err
 		}
 
-		err = tools.ShortUnmarshal(resp.Body, &carsModel)
+		err = tools.ShortUnmarshal(resp.Body, &carModel)
 		if err != nil {
 			log.WithField("component", "api").Debug(err)
 			return []domain.Car{}, err
 		}
+
+		carsModel = append(carsModel, carModel)
 	}
 
 	for _, car := range carsModel {
