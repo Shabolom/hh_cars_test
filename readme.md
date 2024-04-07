@@ -7,6 +7,27 @@ ___
 go get ./..
 ```
 
+**Используемые флаги.**
+
+```go
+// изменить хост
+var flagHost = flag.String("h", "", "host")
+// изменить порт
+var flagPort = flag.String("p", "", "port")
+// изменить хост db
+var flagDbHost = flag.String("dh", "", "dbHost")
+// изменить порт db
+var flagDbPort = flag.String("dp", "", "dbPort")
+// изменить пользователя db
+var flagDbUser = flag.String("du", "", "dbUser")
+// изменить пароль к db
+var flagDbPassword = flag.String("dpa", "", "dbPassword")
+// заменить имя подключения db
+var flagDbName = flag.String("dn", "", "dbName")
+// изменить изменить статус проэкта
+var flagProduction = flag.Bool("pr", false, "production")
+```
+
 **Подключение к db**
 > Для подключения в базу происходит по средствам форматирования строки данными из env файла.
 
