@@ -1,0 +1,46 @@
+version: '2.4'
+services:
+  postgres:
+    image: postgres:13
+    restart: always
+    environment:
+      POSTGRES_USER: car
+      POSTGRES_PASSWORD: car
+      POSTGRES_DB: car
+    healthcheck:
+      test: pg_isready -U car
+      interval: 10s
+      timeout: 10s
+      retries: 5
+    ports:
+      - "6432:5432"
+    networks:
+      car:
+        aliases:
+          - postgres
+  car:
+    ports:
+      - "8080:8080"
+    environment:
+      HOST: "localhost"
+      PORT: "8080"
+      DB_HOST: "postgres"
+      DB_PORT: "5432"
+      DB_USER: "car"
+      DB_PASSWORD: "car"
+      DB_NAME: "car"
+      LOCAL_API: "http://localhost:8800/"
+      CONNECTION_API_GET: "http://localhost:8000/api/cars"
+      PRODUCTION: false
+    build:
+      context: ../../
+      dockerfile: build/app/Dockerfile
+    depends_on:
+      - postgres
+    networks:
+      car:
+        aliases:
+          - car
+networks:
+  car:
+    driver: bridge
